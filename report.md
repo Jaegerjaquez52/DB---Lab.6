@@ -51,7 +51,7 @@ db.createCollection("users");
 
 - ### Вставка
 
-```json
+```javascript
 db.authors.insertOne([
   {
   name: "Поліщук Андрій",
@@ -63,7 +63,7 @@ db.authors.insertOne([
 ```
 ### Результат:
 ![alt text](screenshots/05_insert_one.png)
-```json
+```javascript
 db.books.insertMany([
   {
     title: "Від заліза до радіанта",
@@ -91,7 +91,7 @@ db.books.insertMany([
 ![alt text](screenshots/06_insert_many.png)
 
 - ### Пошук
-```json
+```javascript
 db.books.find({
   $and: [
     { genres: "романтизм"},
@@ -103,7 +103,7 @@ db.books.find({
 ### Результат:
 ![alt text](screenshots/07_find.png)
 
-```sql
+```javascript
 db.authors.find({
   name: { $regex: /^М/ }
 })
@@ -113,7 +113,7 @@ db.authors.find({
 ![alt text](screenshots/08_find.png)
 
 - ### Оновлення
-```sql
+```javascript
 db.books.updateOne(
   { title: "Від заліза до радіанта" },
   {
@@ -128,7 +128,7 @@ db.books.updateOne(
 
 
 - ### Видалення
-```sql
+```javascript
 db.books.deleteMany({
   author: "Поліщук Андрій"
 })
@@ -138,11 +138,11 @@ db.books.deleteMany({
 
 ### 3. Індекси та аналіз продуктивності
 
-```json
+```javascript
 db.books.find({ publication_year: NumberInt(1911) }).explain("executionStats")
 ```
 
-```json
+```javascript
 db.books.createIndex({ publication_year: 1 })
 ```
 
@@ -150,11 +150,11 @@ db.books.createIndex({ publication_year: 1 })
 ### Результат( ~~IDX~~ | IDX ):
  totalDocsExamined: 10 |  totalDocsExamined: 2,
 
- ```json
+ ```javascript
 db.books.find({ author: "Іван Франко" }).sort({ title: 1 }).explain("executionStats")
 ```
 
-```json
+```javascript
 db.books.createIndex({ author: 1, title: 1 })
 ```
 
@@ -162,11 +162,11 @@ db.books.createIndex({ author: 1, title: 1 })
 ### Результат( ~~IDX~~ | IDX ):
  totalDocsExamined: 10 |  totalDocsExamined: 3,
 
- ```json
+ ```javascript
 db.books.find({ genres: "романтизм" }).explain("executionStats")
 ```
 
-```json
+```javascript
 db.books.createIndex({ genres: 1 })
 ```
 
@@ -177,11 +177,11 @@ db.books.createIndex({ genres: 1 })
 
 - ### Складені індески
 
-```json
+```javascript
 db.books.createIndex({ author: 1, publication_year: -1 })
 ```
 
-```json
+```javascript
 db.books.createIndex({ genres: 1, title: 1 })
 ```
 
@@ -189,7 +189,7 @@ db.books.createIndex({ genres: 1, title: 1 })
 
 ### 4. Агрегатні запити
 
-```json
+```javascript
 db.books.aggregate([
   // $unwind - Розбиває масив жанрів на окремі документи
   { $unwind: "$genres" },
@@ -211,7 +211,7 @@ db.books.aggregate([
 ### Результат
 ![alt text](screenshots/11_aggregate.png)
 
-```json
+```javascript
 db.books.aggregate([
   {
     $group: {
@@ -239,7 +239,7 @@ db.books.aggregate([
 
 ### 5. Текстовий пошук
 
-```json
+```javascript
 // 1. Створення текстового індексу
 db.books.createIndex({ description: "text" })
 
@@ -253,7 +253,7 @@ db.books.find({ $text: { $search: "кохання карпати" } })
 
 ### 6. Текстовий пошук
 
-```json
+```javascript
 db.users.aggregate([
   {
     $lookup: {
@@ -273,7 +273,7 @@ db.users.aggregate([
 
 ### 7. Представлення
 
-```json
+```javascript
 // 1. Створення View
 db.createView(
   "available_books_view",    
@@ -293,7 +293,7 @@ db.available_books_view.find()
 
 ### 8. Валідація схеми
 
-```json
+```javascript
 db.runCommand({
   collMod: "books",
   validator: {
@@ -340,7 +340,7 @@ db.runCommand({
 });
 ```
 ### Результат:
-```json
+```javascript
 db.books.insertOne({
   title: "Тестова книга",
   author: "Тестовий автор",
@@ -353,7 +353,7 @@ db.books.insertOne({
 
 ### 9. TTL індекс
 
-```json
+```javascript
 // 1. Створюємо колекцію 
 db.createCollection("user_sessions");
 
@@ -374,7 +374,7 @@ db.user_sessions.insertOne({
 
 ### 9. Сисетма версіонування документів
 
-```json
+```javascript
 // Вибираємо книгу для зміни 
 var book = db.books.findOne({ title: "Кобзар" });
 
@@ -406,7 +406,7 @@ if (book) {
 
 ### 10. Повнотекстовий пошук
 
-```json
+```javascript
 // Створюємо індекс
 db.books.createIndex(
     { title: "text", description: "text" },
@@ -481,7 +481,7 @@ WHERE b.available = TRUE;
 
 ### NoSQL підхід
 
-```json
+```javascript
 {
   _id: ObjectId("65f1a2b3c4d5e6f7g8h9i0j1"),
   title: "Кобзар",
@@ -501,7 +501,7 @@ WHERE b.available = TRUE;
 ```
 
 Запит для отримання повної інформації про доступні книги:
-```json
+```javascript
 db.books.find({ available: true });
 ```
 
